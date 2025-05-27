@@ -9,6 +9,7 @@ const registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
+      email = email.toLowerCase();
     // Check if user already exists
     if (await User.findOne({ email })) {
       return res.status(400).json({ message: "User already exists" });
@@ -42,19 +43,29 @@ const registerUser = async (req, res) => {
 // @access Public
 const loginUser = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    let { email, password } = req.body;
+    email = email.toLowerCase();
+
+    console.log("Login attempt with email:", email);
 
     const user = await User.findOne({ email });
+    console.log("User found:", !!user);
+
     if (!user) {
+      console.log("Login failed: user not found");
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
+    console.log("Password match:", isMatch);
+
     if (!isMatch) {
+      console.log("Login failed: password incorrect");
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "30d" });
+    console.log("Login successful, JWT token generated");
 
     res.json({ token });
   } catch (error) {
