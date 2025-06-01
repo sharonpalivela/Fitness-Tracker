@@ -44,6 +44,13 @@ app.get('/', (req, res) => {
   res.send('Fitness Tracker API is Running...');
 });
 
+// ✅ Test route to confirm server is working
+app.get('/test', (req, res) => {
+  console.log("✅ /test route hit");
+  res.send("Test route working!");
+});
+
+
 // Error Handling
 app.use((err, req, res, next) => {
   console.error(err.stack);

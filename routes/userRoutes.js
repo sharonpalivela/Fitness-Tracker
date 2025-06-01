@@ -14,7 +14,8 @@ router.post("/register", registerUser);
 // @desc    Login user
 // @route   POST /api/users/login
 // @access  Public
-router.post("/login", loginUser);
+router.post('/login', loginUser);
+
 
 // @desc    Get user profile
 // @route   GET /api/users/profile
