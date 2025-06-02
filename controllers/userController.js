@@ -3,14 +3,20 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const asyncHandler = require('express-async-handler');
 
+// ✅ Generate JWT token
+const generateToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: "30d",
+  });
+};
+
 // @desc   Register a new user
 // @route  POST /api/users/register
 // @access Public
-// Remove manual hashing from registerUser
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
 
-  console.log("👉 Received register request:", req.body); // Add this line
+  console.log("👉 Received register request:", req.body);
 
   const userExists = await User.findOne({ email });
 
@@ -30,7 +36,6 @@ const registerUser = asyncHandler(async (req, res) => {
     res.status(400).json({ message: "Invalid user data" });
   }
 });
-
 
 // @desc   Login user
 // @route  POST /api/users/login
@@ -60,7 +65,7 @@ const loginUser = asyncHandler(async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
-      token: generateToken(user._id),
+      token: generateToken(user._id), // ✅ Now defined
     });
   } else {
     console.log("❌ Password does not match");
@@ -69,6 +74,4 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 });
 
-
-
-module.exports = { registerUser, loginUser }; 
+module.exports = { registerUser, loginUser };
